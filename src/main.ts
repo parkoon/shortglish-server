@@ -1,10 +1,17 @@
 import { NestFactory } from '@nestjs/core';
+import { Logger } from 'nestjs-pino';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { ValidationPipe } from './common/pipes/validation.pipe';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    bufferLogs: true,
+  });
+
+  // Pino Logger 사용
+  const logger = app.get(Logger);
+  app.useLogger(logger);
 
   // CORS 설정
   app.enableCors();
@@ -17,6 +24,6 @@ async function bootstrap() {
 
   const port = process.env.PORT || 4000;
   await app.listen(port);
-  console.log(`Application is running on: http://localhost:${port}`);
+  logger.log(`서버가 시작되었습니다: http://localhost:${port}`, 'Bootstrap');
 }
 bootstrap();

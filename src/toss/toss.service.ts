@@ -1,4 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Logger } from 'nestjs-pino';
 import { TossApiClient } from './toss-api.client';
 import { DecryptUtil } from './utils/decrypt.util';
 import { ConfigService } from '../config/config.service';
@@ -14,6 +15,7 @@ export class TossService {
   constructor(
     private readonly tossApiClient: TossApiClient,
     private readonly configService: ConfigService,
+    private readonly logger: Logger,
   ) {}
 
   async generateToken(dto: GenerateTokenDto): Promise<TokenResponse> {
@@ -78,7 +80,13 @@ export class TossService {
           );
         } catch (error) {
           // 복호화 실패 시 원본 유지
-          console.error(`Failed to decrypt field ${field}:`, error);
+          this.logger.error(
+            {
+              field,
+              error: error instanceof Error ? error.message : String(error),
+            },
+            '필드 복호화에 실패했습니다',
+          );
         }
       }
     }

@@ -125,8 +125,40 @@ yarn start:prod
 ## 7. 향후 개선 사항
 
 - [x] 콜백 Basic Auth Guard 구현
-- [ ] 로깅 시스템 추가 (Winston/Pino)
+- [x] 로깅 시스템 추가 (Pino)
 - [ ] Rate Limiting 추가
 - [ ] Swagger/OpenAPI 문서화
 - [ ] 단위 테스트 및 E2E 테스트 작성
+
+## 8. 로깅 시스템 (Pino)
+
+Pino 로깅 시스템이 적용되었습니다.
+
+### 로그 레벨
+- **개발 환경**: `debug` 레벨 (모든 로그 출력)
+- **프로덕션 환경**: `info` 레벨 (중요한 로그만 출력)
+
+### 로그 포맷
+- **개발 환경**: `pino-pretty`를 사용한 읽기 쉬운 포맷
+- **프로덕션 환경**: JSON 포맷 (구조화된 로그)
+
+### 자동 로깅
+- 모든 HTTP 요청/응답이 자동으로 로깅됩니다
+- `/health` 엔드포인트는 로깅에서 제외됩니다
+
+### 주요 로깅 위치
+- **TOSS API 호출**: 요청/성공/실패 모두 로깅
+- **복호화 실패**: 필드별 복호화 실패 시 로깅
+- **서버 시작**: 서버 시작 시 포트 정보 로깅
+
+### 로그 사용 예시
+```typescript
+// Service나 Controller에서
+constructor(private readonly logger: Logger) {}
+
+this.logger.debug({ data }, '디버그 메시지');
+this.logger.info({ data }, '정보 메시지');
+this.logger.warn({ data }, '경고 메시지');
+this.logger.error({ error }, '에러 메시지');
+```
 
