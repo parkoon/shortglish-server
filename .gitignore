@@ -1,0 +1,15 @@
+node_modules
+dist
+*.log
+.env
+.env.local
+certs/*.pem
+certs/*.key
+certs/*.crt
+
+
+.cursor
+.cursorrules
+.claude
+.yarn
+.vscode
